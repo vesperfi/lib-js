@@ -1,0 +1,49 @@
+#!/usr/bin/env node
+
+/**
+ * Usage:
+ *
+ * swap-eth-for-token <token> <amount>
+ *
+ * token: The address of the ERC20 token contract.
+ * amount: The ETH amount to swap in wei.
+ *
+ * Required environment variables:
+ *
+ * NODE_URL: URL of the Ethereum node to use.
+ * MNEMONIC: The BIP 39 12-words phrase used to sign the transaction.
+ * ACCOUNT: The number of the account to use. Defaults to 0.
+ *
+ * Example: Swap 1 GWei for MANA:
+ *
+ * source .env && \
+ * wrap-eth 1000000000
+ */
+
+'use strict'
+
+require('dotenv').config()
+const HDWalletProvider = require('@truffle/hdwallet-provider')
+const Web3 = require('web3')
+
+const wrapEth = require('../test/wrap-eth')
+
+const provider = new HDWalletProvider({
+  addressIndex: Number.parseInt(process.env.ACCOUNT || '0'),
+  mnemonic: process.env.MNEMONIC,
+  numberOfAddresses: 1,
+  providerOrUrl: process.env.NODE_URL
+})
+const from = Web3.utils.toChecksumAddress(provider.getAddress(0))
+const web3 = new Web3(provider)
+
+const [amount] = process.argv.slice(2)
+
+wrapEth(web3, amount, from)
+  .then(console.log)
+  .catch(function (err) {
+    console.error(err.message)
+  })
+  .finally(function () {
+    provider.engine.stop()
+  })

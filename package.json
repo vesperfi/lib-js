@@ -1,0 +1,142 @@
+{
+  "name": "vesper-lib",
+  "version": "1.0.0",
+  "description": "Vesper JavaScript library",
+  "keywords": [
+    "bloq",
+    "defi",
+    "eth",
+    "library",
+    "pool",
+    "pools",
+    "usdc",
+    "vesper",
+    "vsp",
+    "wbtc"
+  ],
+  "license": "MIT",
+  "author": "Gabriel Montes <gabriel@bloq.com>",
+  "files": [
+    "src"
+  ],
+  "main": "src/index.js",
+  "scripts": {
+    "coverage": "nyc npm run test",
+    "coverage:e2e": "nyc npm run test:e2e",
+    "deps:check": "dependency-check --no-dev --ignore-module patch-package .",
+    "fork:start": "scripts/fork-chain",
+    "fork:stop": "scripts/kill-ganache-cli",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint --cache .",
+    "lint:fix": "eslint --cache --fix .",
+    "test": "mocha",
+    "test:e2e": "scripts/test-e2e"
+  },
+  "dependencies": {
+    "@uniswap/default-token-list": "^1.5.0",
+    "big.js": "^6.0.1",
+    "debug": "^4.1.1",
+    "erc-20-abi": "^1.0.0",
+    "lodash": "^4.17.20",
+    "p-props": "^4.0.0",
+    "p-series": "^2.1.0",
+    "p-tap": "^3.1.0",
+    "vesper-metadata": "2.3.0"
+  },
+  "devDependencies": {
+    "@truffle/hdwallet-provider": "1.2.3",
+    "chai": "^4.3.4",
+    "dependency-check": "^4.1.0",
+    "dotenv": "^8.6.0",
+    "eslint": "^7.21.0",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-mocha": "^7.0.1",
+    "eslint-plugin-promise": "^5.1.0",
+    "ganache-cli": "^6.12.1",
+    "husky": "^4.3.8",
+    "lint-staged": "^10.5.4",
+    "mocha": "^8.3.2",
+    "nyc": "^15.1.0",
+    "patch-package": "^6.2.2",
+    "prettier": "^2.2.1",
+    "web3": "^1.2.11",
+    "web3-parse-receipt-events": "^1.0.0"
+  },
+  "engines": {
+    "node": ">= 12"
+  },
+  "eslintConfig": {
+    "env": {
+      "browser": false,
+      "es6": true,
+      "node": true
+    },
+    "extends": [
+      "eslint:recommended",
+      "plugin:promise/recommended",
+      "prettier"
+    ],
+    "overrides": [
+      {
+        "env": {
+          "mocha": true
+        },
+        "files": [
+          "*.spec.js"
+        ],
+        "extends": [
+          "plugin:mocha/recommended"
+        ],
+        "plugins": [
+          "mocha"
+        ]
+      }
+    ],
+    "parserOptions": {
+      "ecmaVersion": 2018,
+      "sourceType": "script"
+    },
+    "root": true,
+    "rules": {
+      "promise/always-return": "off",
+      "promise/catch-or-return": [
+        "error",
+        {
+          "allowFinally": true
+        }
+      ],
+      "promise/no-nesting": "off"
+    }
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "pre-push": "npm run deps:check && npm run test"
+    }
+  },
+  "lint-staged": {
+    "*.js": "npm run lint:fix",
+    "*.{css,js,json,md}": "npm run format"
+  },
+  "mocha": {
+    "color": true,
+    "exit": true
+  },
+  "nyc": {
+    "all": true,
+    "include": [
+      "src/**/*.js"
+    ],
+    "reporter": [
+      "lcov",
+      "text"
+    ]
+  },
+  "prettier": {
+    "arrowParens": "avoid",
+    "semi": false,
+    "singleQuote": true,
+    "trailingComma": "none"
+  }
+}

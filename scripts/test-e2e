@@ -1,0 +1,21 @@
+#!/bin/bash
+
+patch-package
+
+if [ -z "$CI" ]; then
+
+  E2E=true npm run test
+
+else
+
+  npm run fork:start
+  sleep 10
+
+  E2E=true npm run test -- -b
+  RESULT=$?
+
+  npm run fork:stop
+
+  exit $RESULT
+
+fi
