@@ -3,12 +3,13 @@
 require('dotenv').config()
 require('chai').should()
 const { pools, tokens } = require('vesper-metadata')
-const Big = require('big.js')
+const Big = require('big.js').default
 const erc20Abi = require('erc-20-abi')
 const HDWalletProvider = require('@truffle/hdwallet-provider')
 const Web3 = require('web3')
 
 const createVesper = require('..')
+const testProvider = require('./test-provider')
 const swapEthForTokens = require('./swap-eth-for-tokens')
 const wrapEth = require('./wrap-eth')
 
@@ -16,12 +17,11 @@ const overestimation = Number.parseInt(process.env.GAS_OVERESTIMATION || '2')
 
 const amounts = {
   DAI: '10000000000000000000', // 10 DAI
-  ETH: '100000000000000000', // 0.1 ETH
   USDC: '10000000', // 10 USDC
-  VSP: '100000000000000000', // 0.1 VSP
-  WBTC: '1000000', // 0.01 WBTC
-  WETH: '100000000000000000' // 0.1 WETH
+  USDT: '10000000', // 10 USDT
+  WBTC: '1000000' // 0.01 WBTC
 }
+const defaultAmount = '100000000000000000' // 0.1
 
 describe('E2E', function () {
   this.timeout(0)
@@ -39,10 +39,10 @@ describe('E2E', function () {
       addressIndex: Number.parseInt(process.env.ACCOUNT || '0'),
       mnemonic: process.env.MNEMONIC,
       numberOfAddresses: 1,
-      providerOrUrl: process.env.NODE_URL || 'http://127.0.0.1:8545'
+      providerOrUrl: process.env.NODE_URL
     })
     from = Web3.utils.toChecksumAddress(provider.getAddress(0))
-    web3 = new Web3(provider)
+    web3 = new Web3(testProvider(provider))
   })
 
   // eslint-disable-next-line mocha/no-setup-in-describe
@@ -54,9 +54,9 @@ describe('E2E', function () {
     )
     .map(pool => ({
       ...pool,
-      amount: amounts[pool.asset] || '1000000000000000000'
+      amount: amounts[pool.asset] || defaultAmount
     }))
-    .forEach(function ({ name, address, asset, stage, amount }) {
+    .forEach(function ({ name, address, asset, stage, amount, supersededBy }) {
       describe(name, function () {
         before(function () {
           const vesper = createVesper(web3, {
@@ -301,6 +301,8 @@ describe('E2E', function () {
             })
         })
 
+        // These tests are not required as the lib is not used to initiate
+        // rebalances.
         it(`should rebalance ${name}`, function () {
           const _this = this
           const vesper = createVesper(web3, {
@@ -331,6 +333,91 @@ describe('E2E', function () {
               // Check transaction receipt
               const { receipt } = result.raw.pop()
               receipt.should.have.property('status').that.is.true
+            })
+        })
+
+        it(`should migrate ${name}`, function () {
+          if (!supersededBy) {
+            this.skip()
+            return null
+          }
+
+          const vesper = createVesper(web3, {
+            from,
+            overestimation,
+            stages: ['all']
+          })
+
+          // Deposit assets to migrate
+          return vesper[address]
+            .deposit(amount)
+            .promise.then(function (result) {
+              // Check the transaction succedded
+              const { receipt } = result.raw.pop()
+              receipt.should.have.property('status').that.is.true
+
+              // Get the balance and withdraw fee of the pool and the balance of
+              // the destination pool
+              const akAddress = vesper.metadata.support.find(
+                c => c.name === 'MiniArmyKnife'
+              ).address
+              return Promise.all([
+                vesper[address].getDepositedBalance(),
+                vesper[address].getWithdrawFee(),
+                vesper[address].isAddressWhitelisted(akAddress),
+                vesper[supersededBy].getDepositedBalance()
+              ])
+            })
+            .then(function ([
+              balance,
+              withdrawFee,
+              akIsWhitelisted,
+              destBalance
+            ]) {
+              // Get the expected balance at the destination pool
+              const expectedBalance = Big(balance)
+                .mul(1 - (akIsWhitelisted ? 0 : withdrawFee))
+                .plus(destBalance)
+                .toFixed(0)
+
+              // Execute the migration
+              return Promise.all([
+                expectedBalance,
+                vesper[address].migrate().promise
+              ])
+            })
+            .then(function ([expectedBalance, result]) {
+              // Check result
+              result.should.have.property('sent').that.match(/^[0-9]+$/)
+              result.should.have.property('received').that.match(/^[0-9]+$/)
+              result.should.have.property('fees').that.match(/^[0-9]+$/)
+              result.should.have.property('status', true)
+              result.should.have.property('raw').that.is.an('array')
+              // Check transaction receipt
+              const { receipt } = result.raw.pop()
+              receipt.should.have.property('status').that.is.true
+
+              // Get the balances again
+              return Promise.all([
+                vesper[address].getDepositedBalance(),
+                vesper[supersededBy].getDepositedBalance(),
+                expectedBalance
+              ])
+            })
+            .then(function ([balance, destBalance, expectedBalance]) {
+              // Check the balance of the pool is 0
+              balance.should.equals('0')
+
+              // Check the balance of the destination pool is correct (or at
+              // least close enough due to rouding issues)
+              Big(destBalance)
+                .minus(expectedBalance)
+                .abs()
+                .lt(100)
+                .should.equal(
+                  true,
+                  `${destBalance} does not equal ${expectedBalance}`
+                )
             })
         })
 

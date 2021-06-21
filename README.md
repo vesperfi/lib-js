@@ -62,7 +62,7 @@ All the pool operations are exposed in the `vesper` instance and grouped by pool
 
 - `getAddress()`: Gets the address of the pool contract.
 - `getAssetAddress()`: Gets the address of the deposit asset contract.
-- `getStrategyAddress()`: Gets the address of the strategy contract.
+- `getStrategyAddresses()`: Gets the addresses of the strategy contracts.
 - `getPoolRewardsAddress()`: Gets the address of the PoolRewards contract.
 
 - `getBalance()`: Gets the user's balance of pool tokens.
@@ -86,11 +86,16 @@ All the pool operations are exposed in the `vesper` instance and grouped by pool
 
 A `Promise` with the requested data.
 
+#### Signing methods
+
+- `signPermit(spender, amount, deadline)`: Asks the user to sign an ERC-2612 permit.
+
 #### Transaction methods
 
 - `deposit(amount, transactionOptions)`: Deposits assets in the pool.
 - `withdraw(amount, transactionOptions)`: Withdraws deposit assets from the pool.
 - `claimVsp(transactionOptions)`: Claims all claimable VSP in the pool.
+- `migrate(transactionOptions)`: Migrates the balance tokens to a new pool.
 
 ##### Arguments
 

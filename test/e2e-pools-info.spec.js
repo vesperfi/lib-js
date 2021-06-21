@@ -9,19 +9,15 @@ const createVesper = require('..')
 describe('E2E', function () {
   this.timeout(0)
 
-  let web3
-
   before(function () {
     if (!process.env.E2E) {
       this.skip()
-      return
     }
-
-    web3 = new Web3(process.env.NODE_URL || 'http://127.0.0.1:8545')
   })
 
   describe('Pools information', function () {
     it('should get the pools information', function () {
+      const web3 = new Web3(process.env.NODE_URL)
       const vesper = createVesper(web3, { stages: ['-retired'] })
       return vesper.getPools().then(function (pools) {
         pools.should.be.an('array')

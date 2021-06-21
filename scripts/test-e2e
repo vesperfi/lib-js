@@ -4,11 +4,11 @@ patch-package
 
 if [ -z "$CI" ]; then
 
-  E2E=true npm run test
+  E2E=true npm run test -- -b
 
 else
 
-  npm run fork:start
+  npm run fork:start -- -q
   sleep 10
 
   E2E=true npm run test -- -b

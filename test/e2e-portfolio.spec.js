@@ -6,24 +6,20 @@ const Web3 = require('web3')
 
 const createVesper = require('..')
 
+const address = '0xdf826ff6518e609E4cEE86299d40611C148099d5'
+
 describe('E2E', function () {
   this.timeout(0)
-
-  let address
-  let web3
 
   before(function () {
     if (!process.env.E2E) {
       this.skip()
-      return
     }
-
-    address = '0xdf826ff6518e609E4cEE86299d40611C148099d5'
-    web3 = new Web3(process.env.NODE_URL || 'http://127.0.0.1:8545')
   })
 
   describe('Portfolio', function () {
     it("should get the user's portfolio", function () {
+      const web3 = new Web3(process.env.NODE_URL)
       const vesper = createVesper(web3, { stages: ['-retired'] })
       return vesper.getPortfolio(address).then(function (portfolio) {
         portfolio.should.include.keys('vETH', 'vUSDC', 'vWBTC')
@@ -42,6 +38,7 @@ describe('E2E', function () {
     })
 
     it("should get the user's asset portfolio", function () {
+      const web3 = new Web3(process.env.NODE_URL)
       const vesper = createVesper(web3, { stages: ['-retired'] })
       return vesper.getAssetPortfolio(address).then(function (portfolio) {
         portfolio.should.include.keys('ETH', 'WBTC')

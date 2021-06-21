@@ -9,8 +9,17 @@ const getPoolStatus = (paused, stopped) =>
 
 const createPoolsInfo = (contractsPromise, vesper, uniswapRouter) => ({
   // Returns general information of the pools.
-  getPools(stages) {
+  // onPoolFail: Temporary solution for totalValue method in the smart contract failing for some pools.
+  // After we migrate to v3, we should not use it again.
+  getPools(stages, { onPoolFail } = {}) {
     debug('Getting pools information (%s)', stages ? stages.join(', ') : 'all')
+
+    const handlePoolFail = function (pool) {
+      return function (err) {
+        // eslint-disable-next-line promise/no-promise-in-callback
+        return onPoolFail ? onPoolFail({ pool, err }) : Promise.reject(err)
+      }
+    }
 
     return contractsPromise
       .then(({ pools, poolContracts, assetContracts }) =>
@@ -22,14 +31,19 @@ const createPoolsInfo = (contractsPromise, vesper, uniswapRouter) => ({
                 vesper[pool.address].getInterestEarned(),
                 vesper[pool.address].getInterestFee(),
                 vesper[pool.address].getVspRewardsRate(),
-                vesper[pool.address].getTokenValue(),
+                vesper[pool.address]
+                  .getTokenValue()
+                  .catch(handlePoolFail(pool)),
                 vesper[pool.address].getTotalSupply(),
                 vesper[pool.address].getWithdrawFee(),
                 vesper[pool.address].hasVspRewards(),
                 poolContracts[pool.address].methods.decimals().call(),
                 poolContracts[pool.address].methods.paused().call(),
                 poolContracts[pool.address].methods.stopEverything().call(),
-                poolContracts[pool.address].methods.totalValue().call(),
+                poolContracts[pool.address].methods
+                  .totalValue()
+                  .call()
+                  .catch(handlePoolFail(pool)),
                 pool.asset === 'ETH'
                   ? '18'
                   : assetContracts[pool.asset].methods.decimals().call(),

@@ -12,7 +12,9 @@ const createPortfolio = require('./portfolio')
 const createUniswapRouter = require('./uniswap')
 const getContracts = require('./contracts')
 
-Big.RM = 0 // https://github.com/MikeMcl/big.js/blob/v5.2.2/big.js#L26
+// Force Big to round down.
+// See https://github.com/MikeMcl/big.js/blob/v5.2.2/big.js#L26
+Big.RM = 0
 
 /**
  * Pools are placed into different stages according to their maturity:
@@ -69,6 +71,10 @@ function createVesper(web3, options = {}) {
   Object.assign(vesper, createPoolsInfo(contractsPromise, vesper, router))
   Object.assign(vesper, createPortfolio(contractsPromise, vesper, options))
 
+  // Get the VAK address
+  const vakAddress = metadata.support.find(c => c.name === 'MiniArmyKnife')
+    .address
+
   // Create pool-specific methods
   pools.forEach(function (pool) {
     debug('Adding pool %s methods', pool.name)
@@ -84,6 +90,7 @@ function createVesper(web3, options = {}) {
         })
       ),
       tokens: tokens.concat(metadata.tokens),
+      vakAddress,
       vspAddress,
       ...options
     })

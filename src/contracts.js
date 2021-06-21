@@ -7,6 +7,16 @@ const tokenList = require('@uniswap/default-token-list').tokens
 const collateralManagerAbi = require('./abi/collateral-manager.json')
 const controllerAbi = require('./abi/controller.json')
 const vesperPoolAbi = require('./abi/pool.json')
+const vesperPoolV3Abi = require('./abi/pool-v3.json')
+
+const getPoolAbi = function (version) {
+  switch (version) {
+    case 3:
+      return vesperPoolV3Abi
+    default:
+      return vesperPoolAbi
+  }
+}
 
 const getContracts = function (web3, metadata) {
   debug('Getting contracts')
@@ -46,8 +56,8 @@ const getContracts = function (web3, metadata) {
 
       const poolContracts = pools
         .map(function (pool) {
-          const { address, name } = pool
-          const contract = new web3.eth.Contract(vesperPoolAbi, address)
+          const { address, name, version } = pool
+          const contract = new web3.eth.Contract(getPoolAbi(version), address)
           contract.meta = pool
           return { [address]: contract, [name]: contract }
         })

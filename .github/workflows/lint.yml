@@ -1,4 +1,4 @@
-name: Lint and Format Files
+name: Lint
 
 on:
   push:
@@ -6,14 +6,11 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
-
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v2
         with:
-          node-version: '14.x'
-
+          node-version: 14.x
       - uses: actions/cache@v2
         with:
           path: ~/.npm
@@ -21,9 +18,6 @@ jobs:
           restore-keys: |
             ${{ runner.OS }}-node-
             ${{ runner.OS }}-
-
       - run: npm ci
-
       - run: npm run lint
-
       - run: npm run format:check

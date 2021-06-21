@@ -6,4 +6,8 @@ set -e
 [ -f .env ] && . .env
 
 ./scripts/kill-ganache-cli
-npx ganache-cli --fork "$BASE_NODE_URL" --host 0.0.0.0 --mnemonic "$MNEMONIC" &
+npx ganache-cli \
+  --fork "$BASE_NODE_URL" \
+  --host 0.0.0.0 \
+  --mnemonic "$MNEMONIC" \
+  "$@" &

@@ -40,14 +40,14 @@ const createUniswapRouter = function (web3, vspAddress) {
   // Gets the VSP rate in WETH or in another token.
   // For tokens other than WETH, the router must go through WETH first,
   // otherwise it throws an error.
-  const getVspRate = function (toToken) {
+  const getVspRate = function (toToken, defaultBlock) {
     debug('Getting VSP/%s rate', toToken)
     return (vspAddress
       ? toToken === 'VSP'
         ? Promise.resolve(oneVsp)
         : toToken === 'WETH'
-        ? getAmountOut(oneVsp, ['VSP', 'WETH'])
-        : getAmountOut(oneVsp, ['VSP', 'WETH', toToken])
+        ? getAmountOut(oneVsp, ['VSP', 'WETH'], defaultBlock)
+        : getAmountOut(oneVsp, ['VSP', 'WETH', toToken], defaultBlock)
       : Promise.reject(new Error('VSP address missing'))
     )
       .catch(function (err) {
