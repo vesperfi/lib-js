@@ -1,8 +1,16 @@
 [
   {
     "inputs": [
-      { "internalType": "address", "name": "_pool", "type": "address" },
-      { "internalType": "address", "name": "_swapManager", "type": "address" }
+      {
+        "internalType": "address",
+        "name": "_pool",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_swapManager",
+        "type": "address"
+      }
     ],
     "stateMutability": "nonpayable",
     "type": "constructor"
@@ -67,21 +75,39 @@
   {
     "inputs": [],
     "name": "AAVE",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "NAME",
-    "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "VERSION",
-    "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
@@ -126,7 +152,11 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "_keeperAddress", "type": "address" }
+      {
+        "internalType": "address",
+        "name": "_keeperAddress",
+        "type": "address"
+      }
     ],
     "name": "addKeeper",
     "outputs": [],
@@ -143,14 +173,26 @@
   {
     "inputs": [],
     "name": "canStartCooldown",
-    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "canUnstake",
-    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
@@ -158,17 +200,31 @@
     "inputs": [],
     "name": "collateralToken",
     "outputs": [
-      { "internalType": "contract IERC20", "name": "", "type": "address" }
+      {
+        "internalType": "contract IERC20",
+        "name": "",
+        "type": "address"
+      }
     ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "amount", "type": "uint256" }
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
     ],
     "name": "convertFrom18",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "pure",
     "type": "function"
   },
@@ -181,8 +237,16 @@
         "name": "_cooldownStart",
         "type": "uint256"
       },
-      { "internalType": "uint256", "name": "_cooldownEnd", "type": "uint256" },
-      { "internalType": "uint256", "name": "_unstakeEnd", "type": "uint256" }
+      {
+        "internalType": "uint256",
+        "name": "_cooldownEnd",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_unstakeEnd",
+        "type": "uint256"
+      }
     ],
     "stateMutability": "view",
     "type": "function"
@@ -190,7 +254,13 @@
   {
     "inputs": [],
     "name": "feeCollector",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
@@ -203,10 +273,20 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "_token", "type": "address" }
+      {
+        "internalType": "address",
+        "name": "_token",
+        "type": "address"
+      }
     ],
     "name": "isReservedToken",
-    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
@@ -214,14 +294,22 @@
     "inputs": [],
     "name": "keepers",
     "outputs": [
-      { "internalType": "contract IAddressList", "name": "", "type": "address" }
+      {
+        "internalType": "contract IAddressList",
+        "name": "",
+        "type": "address"
+      }
     ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "_newStrategy", "type": "address" }
+      {
+        "internalType": "address",
+        "name": "_newStrategy",
+        "type": "address"
+      }
     ],
     "name": "migrate",
     "outputs": [],
@@ -231,7 +319,13 @@
   {
     "inputs": [],
     "name": "pool",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
@@ -245,13 +339,23 @@
   {
     "inputs": [],
     "name": "receiptToken",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "_keeperAddress", "type": "address" }
+      {
+        "internalType": "address",
+        "name": "_keeperAddress",
+        "type": "address"
+      }
     ],
     "name": "removeKeeper",
     "outputs": [],
@@ -261,7 +365,13 @@
   {
     "inputs": [],
     "name": "startCooldown",
-    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -269,7 +379,11 @@
     "inputs": [],
     "name": "stkAAVE",
     "outputs": [
-      { "internalType": "contract StakedAave", "name": "", "type": "address" }
+      {
+        "internalType": "contract StakedAave",
+        "name": "",
+        "type": "address"
+      }
     ],
     "stateMutability": "view",
     "type": "function"
@@ -278,14 +392,22 @@
     "inputs": [],
     "name": "swapManager",
     "outputs": [
-      { "internalType": "contract ISwapManager", "name": "", "type": "address" }
+      {
+        "internalType": "contract ISwapManager",
+        "name": "",
+        "type": "address"
+      }
     ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "_fromToken", "type": "address" }
+      {
+        "internalType": "address",
+        "name": "_fromToken",
+        "type": "address"
+      }
     ],
     "name": "sweepERC20",
     "outputs": [],
@@ -295,14 +417,26 @@
   {
     "inputs": [],
     "name": "token",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "totalValue",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
@@ -328,7 +462,11 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "_feeCollector", "type": "address" }
+      {
+        "internalType": "address",
+        "name": "_feeCollector",
+        "type": "address"
+      }
     ],
     "name": "updateFeeCollector",
     "outputs": [],
@@ -337,7 +475,11 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "_swapManager", "type": "address" }
+      {
+        "internalType": "address",
+        "name": "_swapManager",
+        "type": "address"
+      }
     ],
     "name": "updateSwapManager",
     "outputs": [],
@@ -346,7 +488,11 @@
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "_amount", "type": "uint256" }
+      {
+        "internalType": "uint256",
+        "name": "_amount",
+        "type": "uint256"
+      }
     ],
     "name": "withdraw",
     "outputs": [],

@@ -1,6 +1,22 @@
 [
   {
-    "inputs": [],
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_name",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_symbol",
+        "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "_token",
+        "type": "address"
+      }
+    ],
     "stateMutability": "nonpayable",
     "type": "constructor"
   },
@@ -58,55 +74,6 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": true,
-        "internalType": "address",
-        "name": "strategy",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "profit",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "loss",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "payback",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "strategyDebt",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "poolDebt",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "creditLine",
-        "type": "uint256"
-      }
-    ],
-    "name": "EarningReported",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
         "indexed": false,
         "internalType": "address",
         "name": "account",
@@ -140,74 +107,6 @@
       }
     ],
     "name": "Shutdown",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "strategy",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "interestFee",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "debtRatio",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "debtRate",
-        "type": "uint256"
-      }
-    ],
-    "name": "StrategyAdded",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "oldStrategy",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "newStrategy",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "interestFee",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "debtRatio",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "debtRate",
-        "type": "uint256"
-      }
-    ],
-    "name": "StrategyMigrated",
     "type": "event"
   },
   {
@@ -292,42 +191,17 @@
       {
         "indexed": true,
         "internalType": "address",
-        "name": "strategy",
+        "name": "previousPoolRewards",
         "type": "address"
       },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "interestFee",
-        "type": "uint256"
-      }
-    ],
-    "name": "UpdatedInterestFee",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
       {
         "indexed": true,
         "internalType": "address",
-        "name": "strategy",
+        "name": "newPoolRewards",
         "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "debtRatio",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "debtRate",
-        "type": "uint256"
       }
     ],
-    "name": "UpdatedStrategyDebtParams",
+    "name": "UpdatedPoolRewards",
     "type": "event"
   },
   {
@@ -442,34 +316,6 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_strategy",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_interestFee",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_debtRatio",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_debtRate",
-        "type": "uint256"
-      }
-    ],
-    "name": "addStrategy",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
         "name": "owner",
         "type": "address"
       },
@@ -556,7 +402,7 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_value",
+        "name": "_amount",
         "type": "uint256"
       }
     ],
@@ -568,7 +414,20 @@
         "type": "uint256"
       }
     ],
-    "stateMutability": "pure",
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "decimalConversionFactor",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -691,9 +550,35 @@
     "name": "feeWhitelist",
     "outputs": [
       {
-        "internalType": "contract IAddressList",
+        "internalType": "address",
         "name": "",
         "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getStrategies",
+    "outputs": [
+      {
+        "internalType": "address[]",
+        "name": "",
+        "type": "address[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getWithdrawQueue",
+    "outputs": [
+      {
+        "internalType": "address[]",
+        "name": "",
+        "type": "address[]"
       }
     ],
     "stateMutability": "view",
@@ -737,8 +622,34 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "init",
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_name",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_symbol",
+        "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "_token",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_poolAccountant",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_addressListFactory",
+        "type": "address"
+      }
+    ],
+    "name": "initialize",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -748,7 +659,7 @@
     "name": "keepers",
     "outputs": [
       {
-        "internalType": "contract IAddressList",
+        "internalType": "address",
         "name": "",
         "type": "address"
       }
@@ -761,7 +672,7 @@
     "name": "maintainers",
     "outputs": [
       {
-        "internalType": "contract IAddressList",
+        "internalType": "address",
         "name": "",
         "type": "address"
       }
@@ -828,7 +739,7 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "owner",
+        "name": "",
         "type": "address"
       }
     ],
@@ -915,6 +826,32 @@
   },
   {
     "inputs": [],
+    "name": "poolAccountant",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "poolRewards",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "pricePerShare",
     "outputs": [
       {
@@ -968,6 +905,19 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_loss",
+        "type": "uint256"
+      }
+    ],
+    "name": "reportLoss",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "shutdown",
     "outputs": [],
@@ -1010,7 +960,7 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "",
+        "name": "_strategy",
         "type": "address"
       }
     ],
@@ -1018,42 +968,42 @@
     "outputs": [
       {
         "internalType": "bool",
-        "name": "active",
+        "name": "_active",
         "type": "bool"
       },
       {
         "internalType": "uint256",
-        "name": "interestFee",
+        "name": "_interestFee",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "debtRate",
+        "name": "_debtRate",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "lastRebalance",
+        "name": "_lastRebalance",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "totalDebt",
+        "name": "_totalDebt",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "totalLoss",
+        "name": "_totalLoss",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "totalProfit",
+        "name": "_totalProfit",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "debtRatio",
+        "name": "_debtRatio",
         "type": "uint256"
       }
     ],
@@ -1260,42 +1210,6 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_strategy",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_debtRate",
-        "type": "uint256"
-      }
-    ],
-    "name": "updateDebtRate",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_strategy",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_debtRatio",
-        "type": "uint256"
-      }
-    ],
-    "name": "updateDebtRatio",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
         "name": "_newFeeCollector",
         "type": "address"
       }
@@ -1309,16 +1223,11 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_strategy",
+        "name": "_newPoolRewards",
         "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_interestFee",
-        "type": "uint256"
       }
     ],
-    "name": "updateInterestFee",
+    "name": "updatePoolRewards",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1332,19 +1241,6 @@
       }
     ],
     "name": "updateWithdrawFee",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address[]",
-        "name": "_withdrawQueue",
-        "type": "address[]"
-      }
-    ],
-    "name": "updateWithdrawQueue",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1383,25 +1279,6 @@
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "withdrawQueue",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
       }
     ],
     "stateMutability": "view",

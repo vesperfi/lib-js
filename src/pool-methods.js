@@ -165,6 +165,15 @@ const createPoolMethods = function (params) {
       )
   }
 
+  // Gets the internal version of pool contract.
+  const getPoolVersion = function () {
+    return version === 1
+      ? Promise.resolve('2.x')
+      : contractsPromise.then(({ poolContract }) =>
+          poolContract.methods.VERSION().call()
+        )
+  }
+
   // Gets the address of the strategy contract. This works only for v1 pools.
   const getStrategyAddress = function (defaultBlock) {
     debug('Getting %s strategy contract address', name)
@@ -191,9 +200,16 @@ const createPoolMethods = function (params) {
       ? getStrategyAddress(defaultBlock).then(address => [address])
       : contractsPromise
           .then(({ poolContract }) =>
-            promiseLoop(i =>
-              poolContract.methods.strategies(i).call({}, defaultBlock)
-            )
+            poolContract.methods
+              .getStrategies()
+              .call({}, defaultBlock)
+              .catch(function (err) {
+                debug('Could not get strategies of %s: %s', name, err.message)
+                debug('Falling back to legacy')
+                return promiseLoop(i =>
+                  poolContract.methods.strategies(i).call({}, defaultBlock)
+                )
+              })
           )
           .then(
             pTap(function (strategyAddresses) {
@@ -347,6 +363,21 @@ const createPoolMethods = function (params) {
           })
         )
     )
+  }
+
+  // Gets the name and version of the given strategy contract.
+  const getStrategyInfo = function (strategyAddress) {
+    const strategy = getStrategyContract(strategyAddress)
+    return Promise.all([
+      strategy.methods
+        .NAME()
+        .call()
+        .catch(() => 'Unset'),
+      strategy.methods
+        .VERSION()
+        .call()
+        .catch(() => 'Unset')
+    ]).then(info => info.join(':'))
   }
 
   // Gets the interest earned in deposit asset since the last rebalance.
@@ -717,8 +748,8 @@ const createPoolMethods = function (params) {
       )
   }
 
-  // Gets the time when the withdraw lock will expire in ms or 0 if unlocked.
-  // This is only applicable to the vVSP pool.
+  // Gets the time in ms until the withdraw lock will expire for the user. Zero
+  // means unlocked. This is only applicable to the vVSP pool.
   const getWithdrawTimelock = function (address) {
     if (name !== 'vVSP') {
       debug('Withdraw timelock is not applicable for %s', name)
@@ -727,11 +758,13 @@ const createPoolMethods = function (params) {
 
     debug('Getting vVSP withdraw timelock status')
 
+    const _address = address || from
+
     return contractsPromise
       .then(({ poolContract }) =>
         Promise.all([
           poolContract.methods
-            .depositTimestamp(address)
+            .depositTimestamp(_address)
             .call()
             .then(Number.parseInt),
           poolContract.methods.lockPeriod().call().then(Number.parseInt)
@@ -1293,10 +1326,93 @@ const createPoolMethods = function (params) {
     )
   }
 
-  // Return the pool contracts
+  // Approves and deposits assets in the pool.
+  const approveAndDeposit = function (
+    approveAmount,
+    depositAmount,
+    transactionOptions = {}
+  ) {
+    debug(
+      'Initiating approval of %s and deposit of %s %s into %s',
+      fromUnit(approveAmount, assetDecimals),
+      fromUnit(depositAmount, assetDecimals),
+      asset,
+      name
+    )
+
+    // There is a catch for vETH: it deposits ETH, not ERC-20 tokens. Therefore
+    // the deposit method need to be changed.
+    const transactionsPromise = contractsPromise
+      .then(({ assetContract, poolContract }) =>
+        Promise.all([poolContract, assetContract])
+      )
+      .then(function ([poolContract, assetContract]) {
+        const txs = []
+        txs.push({
+          method: assetContract.methods.approve(poolAddress, approveAmount),
+          suffix: 'approve',
+          gas: expectedGasFor.approval
+        })
+        txs.push(
+          isToken
+            ? {
+                method: poolContract.methods.deposit(depositAmount),
+                suffix: 'deposit',
+                gas: expectedGasFor.deposit
+              }
+            : {
+                method: poolContract.methods.deposit(),
+                value: depositAmount,
+                suffix: 'deposit',
+                gas: expectedGasFor.deposit
+              }
+        )
+
+        return txs
+      })
+
+    const parseResults = function (transactionsData) {
+      const sent = depositAmount
+      // The two deposit() calls emit different events.
+      // See bloqpriv/vesper-pools#114.
+      const received = isToken
+        ? findReturnValue(
+            transactionsData[transactionsData.length - 1].receipt,
+            'Deposit',
+            'shares',
+            poolAddress
+          )
+        : findReturnValue(
+            transactionsData[transactionsData.length - 1].receipt,
+            'Transfer',
+            'value',
+            poolAddress
+          )
+
+      debug(
+        'Approval of %s and deposit of %s %s into %s completed',
+        fromUnit(approveAmount, assetDecimals),
+        fromUnit(depositAmount, assetDecimals),
+        asset,
+        name
+      )
+      debug('Received %s %s', fromUnit(received), name)
+
+      return { sent, received, decimals: 18 }
+    }
+
+    return executeTransactions(
+      transactionsPromise,
+      parseResults,
+      transactionOptions
+    )
+  }
+
+  // Return the pool contracts.
   const getContracts = () => contractsPromise
 
   return {
+    approveAndDeposit,
     canRebalance,
     claimVsp,
     deposit,
@@ -1311,8 +1427,10 @@ const createPoolMethods = function (params) {
     getInterestFee,
     getMaxWithdrawAmount,
     getPoolRewardsAddress,
+    getPoolVersion,
     getStrategyAddress,
     getStrategyAddresses,
+    getStrategyInfo,
     getStrategyVaultInfo,
     getTokenValue,
     getTotalSupply,
@@ -1322,6 +1440,7 @@ const createPoolMethods = function (params) {
     getWithdrawTimelock,
     hasVspRewards,
     isAddressWhitelisted,
+    isApprovalNeeded,
     migrate,
     rebalance,
     signPermit,

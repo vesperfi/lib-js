@@ -63,12 +63,14 @@ All the pool operations are exposed in the `vesper` instance and grouped by pool
 - `getAddress()`: Gets the address of the pool contract.
 - `getAssetAddress()`: Gets the address of the deposit asset contract.
 - `getStrategyAddresses()`: Gets the addresses of the strategy contracts.
+- `getStrategyInfo(address)`: Gets the name and version of the given strategy contract.
 - `getPoolRewardsAddress()`: Gets the address of the PoolRewards contract.
+- `getPoolVersion()`: Gets the internal version of pool contract.
 
 - `getBalance()`: Gets the user's balance of pool tokens.
 - `getAssetBalance()`: Gets the user's balance of deposit assets.
 - `getDepositedBalance()`: Gets the user's balance of pool tokens in deposit asset.
-- `getWithdrawTimelock()`: Gets the time when the withdraw lock will expire in ms or 0 if unlocked.
+- `getWithdrawTimelock()`: Gets the time in ms until the withdraw lock will expire for the user.
 
 - `hasVspRewards()`: Checks if the pool has VSP rewards.
 - `getVspRewardsRate()`: Gets the VSP rewards rate in VSP/sec.
@@ -81,6 +83,9 @@ All the pool operations are exposed in the `vesper` instance and grouped by pool
 
 - `getInterestFee()`: Gets the interes fee.
 - `getWithdrawFee()`: Gets the withdraw fee.
+- `isAddressWhitelisted(address)`: Checks if the address is in the no-withdraw-fee list of the pool.
+
+- `isApprovalNeeded()`: Checks if an approval is needed to transfer the given amount.
 
 ##### Returns
 
@@ -92,6 +97,7 @@ A `Promise` with the requested data.
 
 #### Transaction methods
 
+- `approveAndDeposit(approveAmount, depositAmount, transactionOptions)`: Approves and deposits assets in the pool.
 - `deposit(amount, transactionOptions)`: Deposits assets in the pool.
 - `withdraw(amount, transactionOptions)`: Withdraws deposit assets from the pool.
 - `claimVsp(transactionOptions)`: Claims all claimable VSP in the pool.
